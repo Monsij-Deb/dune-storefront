@@ -96,7 +96,6 @@ export default function ProductGrid({ onCartUpdate }) {
           const image = node.images.edges[0]?.node;
           const price = node.priceRange.minVariantPrice;
           const variant = node.variants.edges[0]?.node;
-          const isAdding = addingId === variant?.id;
 
           return (
             <article key={node.id} className="group flex flex-col">
@@ -111,14 +110,6 @@ export default function ProductGrid({ onCartUpdate }) {
                 ) : (
                   <div className="text-[10px] text-neutral-400 uppercase tracking-widest">No Image</div>
                 )}
-
-                <button
-                  onClick={() => handleAddToCart(variant?.id)}
-                  disabled={!variant?.availableForSale || isAdding}
-                  className="absolute bottom-0 inset-x-0 bg-white/95 text-black text-[10px] tracking-[0.16em] uppercase py-3 font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-200 border-t border-neutral-100"
-                >
-                  {isAdding ? 'Adding...' : variant?.availableForSale ? '+ Quick Add' : 'Sold Out'}
-                </button>
               </div>
 
               <div className="space-y-1">

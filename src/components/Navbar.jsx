@@ -7,8 +7,12 @@ import { useWishlist } from '../context/WishlistContext';
 export default function Navbar() {
   const [activeMenu, setActiveMenu] = useState(null);
   
-  const { cartCount, setIsCartOpen } = useCart();
+  // 1. Pull cartItems from context
+  const { cartItems, setIsCartOpen } = useCart();
   const { wishlistItems } = useWishlist();
+
+  // 2. Calculate the exact number of items (accounting for quantity)
+  const cartCount = cartItems.reduce((total, item) => total + (item.quantity || 1), 0);
 
   const menuData = {
     women: {
@@ -17,11 +21,11 @@ export default function Navbar() {
     },
     men: {
       primary: ['New Arrivals', 'Everyday Wear', 'T-Shirts & Polos', 'Jeans & Chinos', 'Outerwear', 'Shoes', 'Accessories'],
-      image: 'https://images.unsplash.com/photo-1520975954732-57dd22299614?q=80&w=1200&auto=format&fit=crop'
+      image: 'https://images.unsplash.com/photo-1490114538077-0a7f8cb49891?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
     },
     kids: {
       primary: ['New Arrivals', 'T-Shirts & Tops', 'Jeans & Pants', 'Dresses', 'Outerwear', 'Shoes', 'Accessories'],
-      image: 'https://images.unsplash.com/photo-1519241047957-be31d7379a5d?q=80&w=1200&auto=format&fit=crop'
+      image: 'https://plus.unsplash.com/premium_photo-1721852724547-769249f94c4e?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
     }
   };
 
@@ -34,20 +38,29 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-neutral-200" onMouseLeave={() => setActiveMenu(null)}>
       <div className="flex items-center justify-between px-6 lg:px-12 h-16 bg-white relative z-30">
+        
+        {/* Logo Left */}
         <div className="w-1/3">
           <Link to="/" className="text-3xl font-normal tracking-tight text-black uppercase">
             DUNE
           </Link>
         </div>
         
+        {/* Search Center */}
         <div className="w-1/3 flex justify-center z-50">
           <SearchBar />
         </div>
 
-        <div className="w-1/3 flex justify-end gap-6">
-          <button className="text-neutral-800 hover:text-black">
-             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-          </button>
+        {/* Icons Right */}
+        <div className="w-1/3 flex justify-end gap-6 items-center">
+          
+          
+          {/* Account Icon */}
+          <Link to="/account" className="text-neutral-800 hover:text-black flex items-center">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+            </svg>
+          </Link>
           
           {/* Wishlist Icon */}
           <Link to="/wishlist" className="text-neutral-800 hover:text-black flex items-center gap-1 relative">
@@ -76,6 +89,7 @@ export default function Navbar() {
         </div>
       </div>
 
+      {/* Category Links */}
       <div className="px-6 lg:px-12 flex gap-8 h-12 items-center text-[13px] uppercase tracking-wide font-medium text-neutral-800 bg-white relative z-20">
         {['women', 'men', 'kids'].map((category) => (
           <Link 
@@ -90,6 +104,7 @@ export default function Navbar() {
         ))}
       </div>
 
+      {/* Dropdown Mega Menu */}
       {activeMenu && (
         <div className="absolute left-0 w-full bg-white border-t border-neutral-200 shadow-2xl flex z-10" style={{ height: '60vh', minHeight: '500px' }}>
           <div className="w-[30%] py-12 px-12 flex flex-col justify-center overflow-y-auto">

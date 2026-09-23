@@ -1,46 +1,107 @@
-import { createContext, useState, useContext } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useAuth } from './AuthContext';
+import { supabase } from '../utils/supabaseClient';
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
-  const [cartItems, setCartItems] = useState([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
+  // 1. The Global Switch for the Cart Drawer
+  const [isCartOpen, setIsCartOpen] = useState(false); 
 
-  const addToCart = (product) => {
-    setCartItems((prev) => {
-      const existing = prev.find(item => item.variantId === product.variantId);
-      if (existing) {
-        return prev.map(item => 
-          item.variantId === product.variantId 
-            ? { ...item, quantity: item.quantity + 1 } 
-            : item
-        );
+  // 2. Initialize cart from local storage
+  const [cartItems, setCartItems] = useState(() => {
+    const localCart = localStorage.getItem('dune_cart');
+    return localCart ? JSON.parse(localCart) : [];
+  });
+
+  const { customerEmail } = useAuth(); 
+
+  // 3. Fetch the cloud cart when a user logs in
+  useEffect(() => {
+    const fetchCloudCart = async () => {
+      if (!customerEmail) return;
+
+      const { data, error } = await supabase
+        .from('carts')
+        .select('cart_data')
+        .eq('user_email', customerEmail)
+        .maybeSingle();
+
+      if (data && data.cart_data) {
+        setCartItems(data.cart_data);
+        localStorage.setItem('dune_cart', JSON.stringify(data.cart_data));
       }
-      return [...prev, { ...product, quantity: 1 }];
-    });
+    };
+
+    fetchCloudCart();
+  }, [customerEmail]);
+
+  // 4. Sync memory to both Local Storage and Supabase
+  const syncCart = async (newCart) => {
+    setCartItems(newCart);
+    localStorage.setItem('dune_cart', JSON.stringify(newCart)); 
+
+    if (customerEmail) {
+      const { error } = await supabase
+        .from('carts')
+        .upsert(
+          { user_email: customerEmail, cart_data: newCart }, 
+          { onConflict: 'user_email' } 
+        );
+
+      if (error) {
+        console.error('Error syncing cart to Supabase:', error);
+      }
+    }
+  };
+
+  const addToCart = (item) => {
+    const newCart = [...cartItems];
+    const existingItemIndex = newCart.findIndex(cartItem => cartItem.variantId === item.variantId);
+
+    if (existingItemIndex > -1) {
+      newCart[existingItemIndex].quantity += (item.quantity || 1);
+    } else {
+      newCart.push({ ...item, quantity: item.quantity || 1 });
+    }
+    
+    syncCart(newCart);
+    
+    // Automatically trigger the drawer to open when an item is added
     setIsCartOpen(true); 
   };
 
   const removeFromCart = (variantId) => {
-    setCartItems((prev) => prev.filter(item => item.variantId !== variantId));
+    const newCart = cartItems.filter(item => item.variantId !== variantId);
+    syncCart(newCart);
   };
 
-  // NEW: Function to increase or decrease quantities
   const updateQuantity = (variantId, amount) => {
-    setCartItems((prev) => prev.map(item => {
+    const newCart = cartItems.map(item => {
       if (item.variantId === variantId) {
-        const newQuantity = item.quantity + amount;
-        // Keep it at a minimum of 1 (they can use the 'Remove' button to delete it)
-        return newQuantity > 0 ? { ...item, quantity: newQuantity } : item;
+        const newQuantity = Math.max(1, item.quantity + amount);
+        return { ...item, quantity: newQuantity };
       }
       return item;
-    }));
+    });
+    syncCart(newCart);
   };
 
-  const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+  const clearCart = () => {
+    syncCart([]);
+  };
 
+  // 5. Provide everything to the rest of the app in one single return statement
   return (
-    <CartContext.Provider value={{ cartItems, isCartOpen, setIsCartOpen, addToCart, removeFromCart, updateQuantity, cartCount }}>
+    <CartContext.Provider value={{ 
+      cartItems, 
+      addToCart, 
+      removeFromCart, 
+      updateQuantity, 
+      clearCart, 
+      isCartOpen, 
+      setIsCartOpen 
+    }}>
       {children}
     </CartContext.Provider>
   );

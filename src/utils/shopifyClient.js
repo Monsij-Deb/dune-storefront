@@ -76,3 +76,38 @@ export async function addToCart(merchandiseId, quantity = 1) {
     return newCart;
   }
 }
+
+
+// Sign Up Mutation
+export const customerCreateMutation = `
+  mutation customerCreate($input: CustomerCreateInput!) {
+    customerCreate(input: $input) {
+      customer {
+        id
+        email
+      }
+      customerUserErrors {
+        code
+        field
+        message
+      }
+    }
+  }
+`;
+
+// Sign In Mutation (Generates the Access Token)
+export const customerAccessTokenCreateMutation = `
+  mutation customerAccessTokenCreate($input: CustomerAccessTokenCreateInput!) {
+    customerAccessTokenCreate(input: $input) {
+      customerAccessToken {
+        accessToken
+        expiresAt
+      }
+      customerUserErrors {
+        code
+        field
+        message
+      }
+    }
+  }
+`;

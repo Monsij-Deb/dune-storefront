@@ -108,11 +108,6 @@ export default function CategoryPage() {
                     alt={node.title} 
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-700 ease-out"
                   />
-                  <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition duration-300">
-                    <button className="w-full bg-white/90 backdrop-blur text-black py-3 text-xs font-bold uppercase tracking-widest hover:bg-black hover:text-white transition pointer-events-none">
-                      Quick Add
-                    </button>
-                  </div>
                 </div>
                 <div className="flex justify-between items-start mt-2">
                   <div>

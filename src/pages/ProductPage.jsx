@@ -11,6 +11,10 @@ export default function ProductPage() {
   
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
+  
+  // NEW: State to control the giant main image
+  const [activeImage, setActiveImage] = useState(null); 
+  
   const [drawerContent, setDrawerContent] = useState(null); 
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -107,6 +111,9 @@ export default function ProductPage() {
         if (fetchedProduct) {
           setProduct(fetchedProduct);
           
+          // Set the main image when the page loads
+          setActiveImage(fetchedProduct.images.edges[0]?.node.url);
+          
           const colorOption = fetchedProduct.options.find(opt => opt.name.toLowerCase() === 'color');
           if (colorOption && colorOption.values.length > 0) {
             setSelectedColor(colorOption.values[0]);
@@ -168,7 +175,7 @@ export default function ProductPage() {
       handle: handle, 
       title: product.title,
       price: parseFloat(product.priceRange.minVariantPrice.amount), 
-      image: product.images.edges[0]?.node.url,
+      image: activeImage, 
       size: selectedSize || 'One Size',
       color: selectedColor || 'Default',
     };
@@ -183,22 +190,19 @@ export default function ProductPage() {
       </div>
 
       <div className="flex flex-col lg:flex-row max-w-[1800px] mx-auto border-b border-neutral-200">
-        <div className="w-full lg:w-2/3 flex flex-col lg:flex-row border-r border-neutral-200">
-          <div className="hidden lg:flex flex-col w-24 border-r border-neutral-200 p-4 space-y-4 overflow-y-auto max-h-screen sticky top-0">
-            {product.images.edges.map((img, idx) => (
-              <img key={idx} src={img.node.url} alt="" className="w-full aspect-[3/4] object-cover cursor-pointer" />
-            ))}
-          </div>
-          <div className="flex-1 bg-[#F5F4F2] p-0 m-0 flex justify-center items-center">
+        
+        {/* CHANGED: Removed the left sidebar entirely. The main image now takes the full space. */}
+        <div className="w-full lg:w-2/3 flex border-r border-neutral-200 bg-[#F5F4F2]">
+          <div className="flex-1 p-0 m-0 flex justify-center items-center min-h-[60vh]">
              <img 
-              src={product.images.edges[0]?.node.url} 
+              src={activeImage || product.images.edges[0]?.node.url} 
               alt={product.title} 
-              className="w-full h-full max-h-[85vh] object-contain object-center mix-blend-multiply" 
+              className="w-full h-full max-h-[85vh] object-contain object-center mix-blend-multiply transition-opacity duration-300" 
             />
           </div>
         </div>
         
-        <div className="w-full lg:w-1/3 p-8 lg:p-16 flex flex-col relative">
+        <div className="w-full lg:w-1/3 p-8 lg:p-16 flex flex-col relative bg-white">
           <div className="text-center mb-10">
             <h1 className="text-lg font-normal uppercase tracking-tight mb-2">{product.title}</h1>
             <p className="text-sm font-semibold">₹{product.priceRange.minVariantPrice.amount}</p>
@@ -231,7 +235,6 @@ export default function ProductPage() {
             </div>
           )}
 
-          {/* New Flex Container for Add to Bag and Wishlist Heart */}
           <div className="flex gap-4 mb-8">
             <button 
               onClick={handleAddToCart}
@@ -241,14 +244,7 @@ export default function ProductPage() {
             </button>
 
             <button 
-              onClick={() => toggleWishlist({
-                id: product.id,
-                handle: handle,
-                title: product.title,
-                price: parseFloat(product.priceRange.minVariantPrice.amount),
-                image: product.images.edges[0]?.node.url,
-                variantId: product.variants.edges[0].node.id 
-              })}
+              onClick={() => toggleWishlist(product.id)}
               className="w-14 border border-neutral-300 flex items-center justify-center hover:border-black transition-colors group"
             >
               <svg 
@@ -324,19 +320,24 @@ export default function ProductPage() {
 
           {drawerContent === 'color' && colorOption && (
             <div className="grid grid-cols-2 gap-4">
-              {colorVariants.map(({ node }) => {
+              {colorVariants.map(({ node }, index) => {
                 const variantColor = node.selectedOptions.find(o => o.name.toLowerCase() === 'color')?.value;
+                
+                // THE FIX: We force the drawer to match the images from your gallery in order, bypassing Shopify's missing variant images!
+                const correctImageUrl = product.images.edges[index]?.node?.url || node.image?.url;
+
                 return (
                   <button 
                     key={node.id}
                     onClick={() => {
                       setSelectedColor(variantColor);
+                      setActiveImage(correctImageUrl); // Instantly updates the giant main image
                       setDrawerOpen(false);
                     }}
                     className="flex flex-col items-center gap-3 group"
                   >
                     <img 
-                      src={node.image?.url} 
+                      src={correctImageUrl} 
                       alt={variantColor} 
                       className={`w-full aspect-[3/4] object-cover transition duration-300 ${selectedColor === variantColor ? 'border border-black p-1' : 'opacity-80 group-hover:opacity-100'}`} 
                     />
