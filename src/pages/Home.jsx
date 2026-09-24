@@ -42,7 +42,7 @@ export default function Home() {
             <div className="aspect-[16/9] md:aspect-auto md:h-[700px] w-full bg-neutral-100 overflow-hidden">
               {/* Couple in sharp outerwear */}
              <img 
-                src="https://shorturl.at/SUfNy" 
+                src="https://plus.unsplash.com/premium_photo-1761800012370-029599a1478f?q=80&w=765&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
                 alt="Stylish man in everyday wear" 
                 className="w-full h-full object-cover hover:scale-105 transition duration-700 ease-out"
               />
