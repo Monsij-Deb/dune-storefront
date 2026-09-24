@@ -2,11 +2,9 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 
-
 export default function CartDrawer() {
   const { isCartOpen, setIsCartOpen, cartItems, removeFromCart, updateQuantity } = useCart();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
-
 
   // Fix for the browser "back" button freezing the checkout state
   useEffect(() => {
@@ -148,6 +146,13 @@ export default function CartDrawer() {
             <div className="flex justify-between items-center mb-6">
               <span className="text-sm font-bold uppercase tracking-widest">Total</span>
               <span className="text-sm font-bold">₹{cartTotal.toFixed(2)}</span>
+            </div>
+            
+            <div className="bg-neutral-100 border-l-4 border-black p-4 mb-6">
+              <p className="text-xs text-neutral-600 font-medium leading-relaxed">
+                <span className="font-bold text-black uppercase tracking-widest block mb-1">Developer Note</span>
+                This is a headless development store. To view the secure Shopify checkout flow, please enter password: <span className="font-bold text-black bg-white border border-neutral-300 px-2 py-0.5 ml-1 select-all">password</span>
+              </p>
             </div>
             
             <button 
