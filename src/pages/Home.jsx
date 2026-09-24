@@ -17,9 +17,9 @@ export default function Home() {
             <p className="text-lg text-neutral-600 mb-8 max-w-md">
               Mastering the art of effortless dressing. Striking, contemporary staples designed for him and her.
             </p>
-            <a href="collections/everyday-uniform" className="bg-black text-white px-10 py-4 text-sm font-bold uppercase tracking-widest hover:bg-neutral-800 transition">
+            <Link to="/collections/everyday-uniform" className="bg-black text-white px-10 py-4 text-sm font-bold uppercase tracking-widest hover:bg-neutral-800 transition">
               Shop Everyday Wear
-            </a>
+            </Link>
           </div>
           
           <div className="w-full md:w-7/12">
@@ -42,10 +42,10 @@ export default function Home() {
             <div className="aspect-[16/9] md:aspect-auto md:h-[700px] w-full bg-neutral-100 overflow-hidden">
               {/* Couple in sharp outerwear */}
              <img 
-  src="https://shorturl.at/SUfNy" 
-  alt="Stylish man in everyday wear" 
-  className="w-full h-full object-cover hover:scale-105 transition duration-700 ease-out"
-/>
+                src="https://shorturl.at/SUfNy" 
+                alt="Stylish man in everyday wear" 
+                className="w-full h-full object-cover hover:scale-105 transition duration-700 ease-out"
+              />
             </div>
           </div>
 
@@ -56,9 +56,9 @@ export default function Home() {
             <p className="text-lg text-neutral-600 mb-8 max-w-sm">
               Lightweight jackets and transitional layers built for the concrete jungle. For men and women.
             </p>
-            <a href="collections/urban-armor" className="bg-black text-white px-10 py-4 text-sm font-bold uppercase tracking-widest hover:bg-neutral-800 transition">
+            <Link to="/collections/urban-armor" className="bg-black text-white px-10 py-4 text-sm font-bold uppercase tracking-widest hover:bg-neutral-800 transition">
               Explore Outerwear
-            </a>
+            </Link>
           </div>
         </div>
       </section>
@@ -73,18 +73,18 @@ export default function Home() {
             <p className="text-lg text-neutral-600 mb-8 max-w-md">
               Sharp cuts, fluid fabrics, and striking proportions. A new code for suiting up.
             </p>
-            <a href="collections/modern-tailoring" className="bg-black text-white px-10 py-4 text-sm font-bold uppercase tracking-widest hover:bg-neutral-800 transition">
+            <Link to="/collections/modern-tailoring" className="bg-black text-white px-10 py-4 text-sm font-bold uppercase tracking-widest hover:bg-neutral-800 transition">
               Discover Tailoring
-            </a>
+            </Link>
           </div>
           
           <div className="w-full md:w-7/12">
             <div className="aspect-[4/5] md:aspect-auto md:h-[700px] w-full bg-neutral-100 overflow-hidden">
               <img 
-  src="https://images.unsplash.com/photo-1554412933-514a83d2f3c8?q=80&w=1400&auto=format&fit=crop" 
-  alt="Modern tailoring" 
-  className="w-full h-full object-cover object-top hover:scale-105 transition duration-700 ease-out"
-/>
+                src="https://images.unsplash.com/photo-1554412933-514a83d2f3c8?q=80&w=1400&auto=format&fit=crop" 
+                alt="Modern tailoring" 
+                className="w-full h-full object-cover object-top hover:scale-105 transition duration-700 ease-out"
+              />
             </div>
           </div>
         </div>
@@ -106,9 +106,9 @@ export default function Home() {
             <h3 className="text-3xl font-extrabold uppercase tracking-tighter text-black mb-6">
               Carry A Classic
             </h3>
-            <a href="collections/womens-bags" className="bg-black text-white px-8 py-3 text-xs font-bold uppercase tracking-widest hover:bg-neutral-800 transition">
+            <Link to="/collections/womens-bags" className="bg-black text-white px-8 py-3 text-xs font-bold uppercase tracking-widest hover:bg-neutral-800 transition">
               Shop Bags
-            </a>
+            </Link>
           </div>
 
           {/* Right: Footwear */}
@@ -123,9 +123,9 @@ export default function Home() {
             <h3 className="text-3xl font-extrabold uppercase tracking-tighter text-black mb-6">
               Best Foot Forward
             </h3>
-            <a href="collections/shoes" className="bg-black text-white px-8 py-3 text-xs font-bold uppercase tracking-widest hover:bg-neutral-800 transition">
+            <Link to="/collections/shoes" className="bg-black text-white px-8 py-3 text-xs font-bold uppercase tracking-widest hover:bg-neutral-800 transition">
               Shop Shoes
-            </a>
+            </Link>
           </div>
         </div>
       </section>
